@@ -22,7 +22,7 @@ module Soulmate
       results.first['term'].should eq('Citi Field')
     end
 
-    it 'should' do
+    it 'should successfully return matches with aliases' do
       results = @matcher.matches_for_term('land shark stadium')
       results.size.should eq(1)
       results.first['term'].should eq('Sun Life Stadium')

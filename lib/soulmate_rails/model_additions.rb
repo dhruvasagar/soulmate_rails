@@ -8,8 +8,9 @@ module SoulmateRails
         'id' => "#{attribute}_#{self.id}",
         'term' => send(attribute),
         'score' => ( respond_to?(options[:score]) ? send(options[:score]) : options[:score] )
-      }.merge( options[:data] ? ( respond_to?(options[:data]) ? send(options[:data]) : options[:data] ) : {} )
-      .merge( options[:aliases] ? ( respond_to?(options[:aliases]) ? send(options[:aliases]) : options[:aliases] ) : {} )
+      }.merge( options[:aliases] ? ( respond_to?(options[:aliases]) ? send(options[:aliases]) : options[:aliases] ) : {} )
+      # NOTE: Not supporting :data for now, will find a better way to use this later.
+      # .merge( options[:data] ? ( respond_to?(options[:data]) ? send(options[:data]) : options[:data] ) : {} )
       loader.add(item, options)
     end
 
@@ -19,7 +20,7 @@ module SoulmateRails
     end
 
     def loader_for(attribute)
-      "#{self.class.name}_#{attribute}"
+      "#{self.class.normalized_class_name}_#{attribute}"
     end
 
     module ClassMethods
@@ -49,7 +50,11 @@ module SoulmateRails
       end
 
       def matcher_for(attribute)
-        "#{self.name}_#{attribute}"
+        "#{normalized_class_name}_#{attribute}"
+      end
+
+      def normalized_class_name
+        self.name.gsub('::', '_').downcase
       end
     end
   end

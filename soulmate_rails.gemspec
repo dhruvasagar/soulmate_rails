@@ -30,5 +30,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', '>= 0'
   s.add_development_dependency 'supermodel', '>= 0'
   s.add_development_dependency 'mock_redis', '>= 0'
-  s.add_development_dependency 'factory_girl', '~> 4.0'
 end

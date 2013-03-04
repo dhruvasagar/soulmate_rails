@@ -1,139 +1,93 @@
-Soulmate Rails
-==============
+# Soulmate Rails
 
-Soulmate is a tool to help solve the common problem of developing a fast autocomplete feature. It uses Redis's sorted sets to build an index of partially completed words and the corresponding top matching items, and provides a simple sinatra app to query them. Soulmate finishes your sentences.
+Soulmate Rails is a rails plugin that helps to solve the common problem of
+auto-completion in rails intuitively. It extends the soulmate gem <a
+href="http://github.com/seatgeek/soulmate">Soulmate</a> to make it easily
+pluggable into a rails project.
 
-Soulmate was designed to be simple and fast, and offers the following:
+## Getting Started
 
- * Provide suggestions for multiple types of items in a single query (at SeatGeek we're autocompleting for performers, events, and venues)
- * Results are ordered by a user-specified score
- * Arbitrary metadata for each item (at SeatGeek we're storing both a url and a subtitle)
+### Installation :
 
-An item is a simple JSON object that looks like:
+```sh
+$ gem install soulmate_rails
+```
 
-    {
-      "id": 3,
-      "term": "Citi Field",
-      "score": 81,
-      "data": {
-        "url": "/citi-field-tickets/",
-        "subtitle": "Flushing, NY"
-      }
-    }
+### Usage :
 
-Where `id` is a unique identifier (within the specific type), `term` is the phrase you wish to provide completions for, `score` is a user-specified ranking metric (redis will order things lexicographically for items with the same score), and `data` is an optional container for metadata you'd like to return when this item is matched (at SeatGeek we're including a url for the item as well as a subtitle for when we present it in an autocomplete dropdown).
+  Following is an example of how one can use Soulmate Rails for enabling backend
+  autocompletion using redis.
 
-See Soulmate in action at <a href="http://seatgeek.com/">SeatGeek</a>.
+```ruby
+class User < ActiveRecord::Base
+  autocomplete :first_name, :score => :calculate_score
+  autocomplete :last_name, :score => :id
 
-Getting Started
----------------
+  def calculate_score
+    # Some magic calculation returning a number.
+  end
+end
 
-As always, kick things off with a `gem install`:
+1.9.3p385 :001 > User.create(:first_name => 'First1', :last_name => 'Last1')
+1.9.3p385 :002 > User.create(:first_name => 'First2', :last_name => 'Last2')
+1.9.3p385 :003 > User.create(:first_name => 'First3', :last_name => 'Last3')
+1.9.3p385 :004 > User.search_by_first_name('firs')
+  => [#<User:0x000000014bb1e8 @new_record=false,
+  @attributes={"first_name"=>"First3", "last_name"=>"Last3" "id"=>3},
+  @changed_attributes={}>, #<User:0x000000014bb1e9 @new_record=false,
+  @attributes={"first_name"=>"First2", "last_name"=>"Last2" "id"=>2},
+  @changed_attributes={}>, #<User:0x000000014bb1ea @new_record=false,
+  @attributes={"first_name"=>"First1", "last_name"=>"Last1" "id"=>1},
+  @changed_attributes={}>]
+1.9.3p385 :005 > User.search_by_last_name('last1')
+  => [#<User:0x000000014bb1e8 @new_record=false,
+  @attributes={"first_name"=>"First3", "last_name"=>"Last3" "id"=>3},
+  @changed_attributes={}>]
+```
 
-    gem install soulmate
+The `autocomplete` method takes 2 arguments :
 
-### Loading Items
+* attribute name to use for autocompletion.
+* options that determine how autocompletion works for indexing.
 
-You can load data into Soulmate by piping items in the JSON lines format into `soulmate load TYPE`.
+Methods added by autocomplete :
 
-Here's a sample `venues.json` (one JSON item per line):
+* Class Methods
+  * `search_by(attribute, term, options={})` - Generic method to search by
+    an attribute for which an autocomplete was defined.
+  * `search_by_#{attribute}(term, options={})` - Specific methods for each
+    attribute autocomplete was defined for.
+* Instance Methods
+  * `update_index_for(attribute, options={})`
+  * `update_index_for_#{attribute}` - used in an `after_save` callback to
+    update index for searching.
+  * `remove_index_for(attribute)`
+  * `remove_index_for_#{attribute}` - used in a `before_destroy` callback to
+    remove index for searching. Hence you should use `destroy` as opposed to
+    `delete` to ensure the callbacks are invoked appropriately by rails and
+    soulmate updates the index.
 
-    {"id":1,"term":"Dodger Stadium","score":85,"data":{"url":"\/dodger-stadium-tickets\/","subtitle":"Los Angeles, CA"}}
-    {"id":28,"term":"Angel Stadium","score":85,"data":{"url":"\/angel-stadium-tickets\/","subtitle":"Anaheim, CA"}}
-    {"id":30,"term":"Chase Field ","score":85,"data":{"url":"\/chase-field-tickets\/","subtitle":"Phoenix, AZ"}}
-    {"id":29,"term":"Sun Life Stadium","score":84,"data":{"url":"\/sun-life-stadium-tickets\/","subtitle":"Miami, FL"}}
-    {"id":2,"term":"Turner Field","score":83,"data":{"url":"\/turner-field-tickets\/","subtitle":"Atlanta, GA"}}
+Options you can provide to `autocomplete` :
 
-And here's the load command (Soulmate assumes redis is running locally on the default port, or you can specify a redis connection string with the `--redis` argument):
+  * `:score` : This is required. Soulmate uses it for sorting the results (in
+    reverse order, i.e. higher score first). This can be the name of a function
+    or can also be the name of another attribute with integer values.
+  * `:aliases` : This is optional. Soulmate uses this as aliases for the term
+    field and uses it for searching as well. This can be an array of values or
+    a method name which returns an array of values.
 
-    $ soulmate load venue --redis=redis://localhost:6379/0 < venues.json
+## Contributing
+### Reporting an Issue :
+* Use <a href="http://github.com/dhruvasagar/soulmate_rails/issues">Github
+   Issue Tracker</a> to report issues.
 
-You can also provide an array of strings under the `aliases` key that will also be added to the index for this item.
+### Contributing to code :
+* Fork it.
+* Commit your changes ( git commit ).
+* Push to github ( git push ).
+* Open a Pull Request.
 
-### Querying for Data
+## License
+Soulmate Rails is released under the MIT License
 
-Once it's loaded, we can query this data by starting `soulmate-web`:
-
-    $ soulmate-web --foreground --no-launch --redis=redis://localhost:6379/0
-
-And viewing the service in your browser: http://localhost:5678/search?types[]=venue&term=stad. You should see something like:
-
-    {
-      "term": "stad",
-      "results": {
-        "venue": [
-          {
-            "id": 28,
-            "term": "Angel Stadium",
-            "score": 85,
-            "data": {
-              "url": "/angel-stadium-tickets/",
-              "subtitle": "Anaheim, CA"
-            }
-          },
-          {
-            "id": 1,
-            "term": "Dodger Stadium",
-            "score": 85,
-            "data": {
-              "url": "/dodger-stadium-tickets/",
-              "subtitle": "Los Angeles, CA"
-            }
-          },
-          {
-            "id": 29,
-            "term": "Sun Life Stadium",
-            "score": 84,
-            "data": {
-              "url": "/sun-life-stadium-tickets/",
-              "subtitle": "Miami, FL"
-            }
-          }
-        ]
-      }
-    }
-
-The `/search` method supports multiple `types` as well as an optional `limit`. For example: `http://localhost:5678/search?types[]=event&types[]=venue&types[]=performer&limit=3&term=yank`. You can also add the `callback` parameter to enable JSONP output.
-
-### Mounting soulmate into a rails app
-
-If you are integrating Soulmate into a rails app, an alternative to launching a separate 'soulmate-web' server is to mount the sinatra app inside of rails.
-
-Add this to routes.rb:
-
-    mount Soulmate::Server, :at => "/sm"
-
-Add this to gemfile:
-
-    gem 'rack-contrib'
-    gem 'soulmate', :require => 'soulmate/server'
-
-Then you can query soulmate at the /sm url, for example: http://localhost:3000/sm/search?types[]=venues&limit=6&term=kitten
-
-You can also config your redis instance:
-
-    # config/initializers/soulmate.rb
-    
-    Soulmate.redis = 'redis://127.0.0.1:6379/0'
-    # or you can asign an existing instance of Redis, Redis::Namespace, etc.
-    # Soulmate.redis = $redis
-
-### Rendering an autocompleter
-
-Soulmate doesn't include any client-side code necessary to render an autocompleter, but Mitch Crowe put together a pretty cool looking jquery plugin designed for exactly that: <a href="https://github.com/mcrowe/soulmate.js">soulmate.js</a>.
-
-Contributing to soulmate
-------------------------
- 
-* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
-* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it
-* Fork the project
-* Start a feature/bugfix branch
-* Commit and push until you are happy with your contribution
-* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
-
-Copyright
----------
-
-Copyright (c) 2011 Eric Waller. See LICENSE.txt for further details.
-
+<!-- vim: set tw=80 colorcolumn=80 -->

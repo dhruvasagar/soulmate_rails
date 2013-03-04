@@ -1,6 +1,6 @@
 module SoulmateRails
   MAJOR = 0
-  MINOR = 1
+  MINOR = 2
   PATCH = 0
   STATUS = 'alpha'
 
