@@ -1,16 +1,16 @@
 require 'spec_helper'
 
+class User < SuperModel::Base
+  include SoulmateRails::ModelAdditions
+
+  autocomplete :name, :score => :id
+end
+
 module SoulmateRails
-  class User < SuperModel::Base
-    include ModelAdditions
-
-    autocomplete :name, :score => :id
-  end
-
   describe ModelAdditions do
     context 'single autocomplete' do
       before :each do
-        @user = User.create(:name => 'Dhruva Sagar')
+        @user = User.create(:name => 'Dhruva Sagar', :country => 'India')
       end
 
       it 'should successfully search by name' do
