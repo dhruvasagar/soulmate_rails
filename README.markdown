@@ -1,9 +1,9 @@
 # Soulmate Rails
 
-Soulmate Rails is a rails plugin that helps to solve the common problem of
-auto-completion in rails intuitively. It extends the soulmate gem <a
-href="http://github.com/seatgeek/soulmate">Soulmate</a> to make it easily
-pluggable into a rails project.
+Soulmate Rails is a rails plugin that helps to solve the common problem
+building auto-completion back-end in rails intuitively. It extends the
+soulmate gem <a href="http://github.com/seatgeek/soulmate">Soulmate</a> to
+make it easily pluggable into a rails project.
 
 ## Getting Started
 
@@ -11,6 +11,11 @@ pluggable into a rails project.
 
 ```sh
 $ gem install soulmate_rails
+```
+OR add this to your `Gemfile` :
+
+```ruby
+gem 'soulmate_rails'
 ```
 
 ### Usage :
