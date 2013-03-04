@@ -1,5 +1,4 @@
 module Soulmate
-
   class Matcher < Base
 
     def matches_for_term(term, options = {})

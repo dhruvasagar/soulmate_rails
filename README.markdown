@@ -1,5 +1,5 @@
-Soulmate
-========
+Soulmate Rails
+==============
 
 Soulmate is a tool to help solve the common problem of developing a fast autocomplete feature. It uses Redis's sorted sets to build an index of partially completed words and the corresponding top matching items, and provides a simple sinatra app to query them. Soulmate finishes your sentences.
 

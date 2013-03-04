@@ -1,12 +1,16 @@
 require 'uri'
-require 'multi_json'
 require 'redis'
+require 'multi_json'
 
-require 'soulmate/version'
+require 'active_support/concern'
+
 require 'soulmate/helpers'
 require 'soulmate/base'
 require 'soulmate/matcher'
 require 'soulmate/loader'
+
+require 'soulmate_rails/model_additions'
+require 'soulmate_rails/railtie' if defined? Rails
 
 module Soulmate
 
