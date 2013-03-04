@@ -1,4 +1,5 @@
-# Soulmate Rails [![Build Status](https://drone.io/github.com/dhruvasagar/soulmate_rails/status.png)](https://drone.io/github.com/dhruvasagar/soulmate_rails/latest)
+# Soulmate Rails [![Build Status](https://travis-ci.org/dhruvasagar/soulmate_rails.png?branch=master)](https://travis-ci.org/dhruvasagar/soulmate_rails)
+<!--[![Build Status](https://drone.io/github.com/dhruvasagar/soulmate_rails/status.png)](https://drone.io/github.com/dhruvasagar/soulmate_rails/latest)-->
 
 Soulmate Rails is a rails plugin that helps to solve the common problem
 building auto-completion back-end in rails intuitively. It extends the
