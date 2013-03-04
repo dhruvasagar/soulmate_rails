@@ -1,4 +1,4 @@
-# Soulmate Rails [![Build Status](https://travis-ci.org/dhruvasagar/soulmate_rails.png?branch=master)](https://travis-ci.org/dhruvasagar/soulmate_rails)
+# Soulmate Rails [![Build Status](https://travis-ci.org/dhruvasagar/soulmate_rails.png?branch=master)](https://travis-ci.org/dhruvasagar/soulmate_rails) [![Dependency Status](https://gemnasium.com/dhruvasagar/soulmate_rails.png)](https://gemnasium.com/dhruvasagar/soulmate_rails)
 <!--[![Build Status](https://drone.io/github.com/dhruvasagar/soulmate_rails/status.png)](https://drone.io/github.com/dhruvasagar/soulmate_rails/latest)-->
 
 Soulmate Rails is a rails plugin that helps to solve the common problem
