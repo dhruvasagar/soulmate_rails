@@ -29,7 +29,7 @@ class User < ActiveRecord::Base
   autocomplete :last_name, :score => :id
 
   def calculate_score
-    # Some magic calculation returning a number.
+    100 / self.id # simple score calculator
   end
 end
 
@@ -38,15 +38,23 @@ end
 1.9.3p385 :003 > User.create(:first_name => 'First3', :last_name => 'Last3')
 1.9.3p385 :004 > User.search_by_first_name('firs')
   => [#<User:0x000000014bb1e8 @new_record=false,
+  @attributes={"first_name"=>"First1", "last_name"=>"Last1" "id"=>1},
+  @changed_attributes={}>, #<User:0x000000014bb1e9 @new_record=false,
+  @attributes={"first_name"=>"First2", "last_name"=>"Last2" "id"=>2},
+  @changed_attributes={}>, #<User:0x000000014bb1ea @new_record=false,
+  @attributes={"first_name"=>"First3", "last_name"=>"Last3" "id"=>3},
+  @changed_attributes={}>]
+1.9.3p385 :005 > User.search_by_last_name('last1')
+  => [#<User:0x000000014bb1e8 @new_record=false,
+  @attributes={"first_name"=>"First1", "last_name"=>"Last1" "id"=>1},
+  @changed_attributes={}>]
+1.9.3p385 :006 > User.search_by_last_name('las')
+  => [#<User:0x000000014bb1e8 @new_record=false,
   @attributes={"first_name"=>"First3", "last_name"=>"Last3" "id"=>3},
   @changed_attributes={}>, #<User:0x000000014bb1e9 @new_record=false,
   @attributes={"first_name"=>"First2", "last_name"=>"Last2" "id"=>2},
   @changed_attributes={}>, #<User:0x000000014bb1ea @new_record=false,
   @attributes={"first_name"=>"First1", "last_name"=>"Last1" "id"=>1},
-  @changed_attributes={}>]
-1.9.3p385 :005 > User.search_by_last_name('last1')
-  => [#<User:0x000000014bb1e8 @new_record=false,
-  @attributes={"first_name"=>"First3", "last_name"=>"Last3" "id"=>3},
   @changed_attributes={}>]
 ```
 
