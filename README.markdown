@@ -55,8 +55,7 @@ The `autocomplete` method takes 2 arguments :
 * attribute name to use for autocompletion.
 * options that determine how autocompletion works for indexing.
 
-Methods added by autocomplete :
-
+### Methods added by autocomplete :
 * Class Methods
   * `search_by(attribute, term, options={})` - Generic method to search by
     an attribute for which an autocomplete was defined.
@@ -72,14 +71,31 @@ Methods added by autocomplete :
     `delete` to ensure the callbacks are invoked appropriately by rails and
     soulmate updates the index.
 
-Options you can provide to `autocomplete` :
+### Options you can provide to `autocomplete` :
+* `:score` : This is required. Soulmate uses it for sorting the results (in
+  reverse order, i.e. higher score first). This can be the name of a function
+  or can also be the name of another attribute with integer values.
+* `:aliases` : This is optional. Soulmate uses this as aliases for the term
+  field and uses it for searching as well. This can be an array of values or
+  a method name which returns an array of values.
 
-  * `:score` : This is required. Soulmate uses it for sorting the results (in
-    reverse order, i.e. higher score first). This can be the name of a function
-    or can also be the name of another attribute with integer values.
-  * `:aliases` : This is optional. Soulmate uses this as aliases for the term
-    field and uses it for searching as well. This can be an array of values or
-    a method name which returns an array of values.
+### Configuration :
+Within your rails application inside config/application.rb you can optionally
+provide redis configuration. Example :
+
+```ruby
+config.soulmate_rails.redis = 'redis://127.0.0.1:6380/0'
+# or you can assign an existing instance of Redis, Redis::Namespace, etc.
+# config.soulmate_rails.redis = $redis
+```
+
+Alternatively, you can also add configuration in an initializer. Example :
+
+```ruby
+Soulmate.redis = 'redis://127.0.0.1:6380/0'
+# or you can assign an existing instance of Redis, Redis::Namespace, etc.
+# Soulmate.redis = $redis
+```
 
 ## Contributing
 ### Reporting an Issue :
