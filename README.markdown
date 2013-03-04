@@ -117,6 +117,7 @@ Soulmate.redis = 'redis://127.0.0.1:6380/0'
 * Open a Pull Request.
 
 ## License
-Soulmate Rails is released under the MIT License
+Soulmate Rails is released under the <a
+href="http://www.opensource.org/licenses/MIT">MIT License</a>
 
 <!-- vim: set tw=80 colorcolumn=80 -->
