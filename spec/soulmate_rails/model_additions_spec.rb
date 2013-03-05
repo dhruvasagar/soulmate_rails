@@ -1,45 +1,91 @@
 require 'spec_helper'
 
-class User < SuperModel::Base
-  include SoulmateRails::ModelAdditions
-
-  autocomplete :name, :score => :id
-end
+require 'samples/models/user_single'
+require 'samples/models/user_multiple'
+require 'samples/models/user_aliases'
+require 'samples/models/user_data'
 
 module SoulmateRails
   describe ModelAdditions do
-    context 'single autocomplete' do
+    context 'autocomplete for name' do
       before :each do
-        @user = User.create(:name => 'Dhruva Sagar', :country => 'India')
+        @user = UserSingle.create(:name => 'Dhruva Sagar')
       end
 
       it 'should successfully search by name' do
-        users = User.search_by_name('dhruv')
+        # By first name
+        users = UserSingle.search_by_name('dhr')
+        user = users.first
+        user.should eq(@user)
+
+        # By last name
+        users = UserSingle.search_by_name('sag')
         user = users.first
         user.should eq(@user)
       end
+
+      after :each do
+        UserSingle.destroy_all
+      end
     end
 
-    context 'multiple autocompletes' do
+    context 'autocomplete for name and country' do
       before :each do
-        # Define another autocomplete for country
-        User.autocomplete(:country, :score => :id)
-        @user = User.create(:name => 'Dhruva Sagar', :country => 'India')
+        @user = UserMultiple.create(:name => 'Dhruva Sagar', :country => 'India')
       end
 
       it 'should successfully search by name as well as country' do
-        users = User.search_by_name('dhr')
+        users = UserMultiple.search_by_name('dhr')
         user = users.first
         user.should eq(@user)
 
-        users = User.search_by_country('ind')
+        users = UserMultiple.search_by_country('ind')
         user = users.first
         user.should eq(@user)
       end
+
+      after :each do
+        UserMultiple.destroy_all
+      end
     end
 
-    after :each do
-      User.destroy_all
+    context 'autocomplete name with aliases' do
+      before :each do
+        @user = UserAliases.create(:name => 'Dhruva Sagar')
+      end
+
+      it 'should successfully search by name'  do
+        # By reverse of my first name
+        users = UserAliases.search_by_name('avu')
+        user = users.first
+        user.should eq(@user)
+
+        # By reverse of my last name
+        users = UserAliases.search_by_name('rag')
+        user = users.first
+        user.should eq(@user)
+      end
+
+      after :each do
+        UserAliases.destroy_all
+      end
+    end
+
+    context 'autocomplete name with additional data' do
+      before :each do
+        @user = UserData.create(:name => 'Dhruva Sagar', :country => 'India')
+      end
+
+      it 'should successfully search by name and set data' do
+        users = UserData.search_by_name('dhr')
+        user = users.first
+        user.should eq(@user)
+        user.soulmate_data.should eq({:source => 'test'})
+      end
+
+      after :each do
+        UserData.destroy_all
+      end
     end
   end
 end

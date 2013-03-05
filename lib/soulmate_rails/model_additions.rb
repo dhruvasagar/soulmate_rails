@@ -2,15 +2,39 @@ module SoulmateRails
   module ModelAdditions
     extend ActiveSupport::Concern
 
+    included do
+      class_eval do
+        attr_accessor :soulmate_data
+      end
+    end
+
     def update_index_for(attribute, options={})
       loader = instance_variable_get("@#{loader_for(attribute)}") || instance_variable_set("@#{loader_for(attribute)}", Soulmate::Loader.new(loader_for(attribute)))
       item = {
         'id' => "#{attribute}_#{self.id}",
         'term' => send(attribute),
         'score' => ( respond_to?(options[:score]) ? send(options[:score]) : options[:score] )
-      }.merge( options[:aliases] ? ( respond_to?(options[:aliases]) ? send(options[:aliases]) : options[:aliases] ) : {} )
-      # NOTE: Not supporting :data for now, will find a better way to use this later.
-      # .merge( options[:data] ? ( respond_to?(options[:data]) ? send(options[:data]) : options[:data] ) : {} )
+      }
+
+      if options[:aliases]
+        if options[:aliases].is_a?(Array)
+          item.merge!({'aliases' => options[:aliases]})
+        elsif respond_to?(options[:aliases])
+          aliases = send(options[:aliases])
+          item.merge!({'aliases' => aliases}) if aliases && aliases.is_a?(Array)
+        end
+      end
+
+      if options[:data]
+        if options[:data].is_a?(Hash)
+          item.merge!({'data' => options[:data]})
+        elsif respond_to?(options[:data])
+          item.merge!({'data' => send(options[:data])})
+        elsif options[:data].is_a?(String)
+          item.merge!({'data' => options[:data]})
+        end
+      end
+
       loader.add(item, options)
     end
 
@@ -45,8 +69,10 @@ module SoulmateRails
         matcher = instance_variable_get("@#{matcher_for(attribute)}") || instance_variable_set("@#{matcher_for(attribute)}", Soulmate::Matcher.new(matcher_for(attribute)))
         matches = matcher.matches_for_term(term, options)
         matches = matches.map do |match|
-          find(match['id'].split('_')[-1].to_i) rescue nil
-        end.compact
+          object = find(match['id'].split('_')[-1].to_i)
+          object.soulmate_data = match['data'].symbolize_keys if object && match['data']
+          object
+        end
       end
 
       def matcher_for(attribute)

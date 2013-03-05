@@ -1,4 +1,4 @@
-# Soulmate Rails [![Build Status](https://travis-ci.org/dhruvasagar/soulmate_rails.png?branch=master)](https://travis-ci.org/dhruvasagar/soulmate_rails) [![Dependency Status](https://gemnasium.com/dhruvasagar/soulmate_rails.png)](https://gemnasium.com/dhruvasagar/soulmate_rails)
+# Soulmate Rails [![Gem Version](https://badge.fury.io/rb/soulmate_rails.png)](http://badge.fury.io/rb/soulmate_rails) [![Build Status](https://travis-ci.org/dhruvasagar/soulmate_rails.png?branch=master)](https://travis-ci.org/dhruvasagar/soulmate_rails) [![Dependency Status](https://gemnasium.com/dhruvasagar/soulmate_rails.png)](https://gemnasium.com/dhruvasagar/soulmate_rails)
 <!--[![Build Status](https://drone.io/github.com/dhruvasagar/soulmate_rails/status.png)](https://drone.io/github.com/dhruvasagar/soulmate_rails/latest)-->
 
 Soulmate Rails is a rails plugin that helps to solve the common problem
@@ -85,7 +85,12 @@ The `autocomplete` method takes 2 arguments :
   or can also be the name of another attribute with integer values.
 * `:aliases` : This is optional. Soulmate uses this as aliases for the term
   field and uses it for searching as well. This can be an array of values or
-  a method name which returns an array of values.
+  the name of a method which returns an array of values.
+* `:data` : This is optional. This can either be the name of a method which
+  returns data or a hash or a string. Once you perform your search using
+  `search_by` or `search_by_#{attribute}` it will set the value of :data
+  corresponding to the object to soulmate_data attr_accessor and can be
+  accessed by calling the soulmate_data accessor on the model object.
 
 ### Configuration :
 Within your rails application inside config/application.rb you can optionally
