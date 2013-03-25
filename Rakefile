@@ -22,3 +22,10 @@ desc 'Open an irb session preloaded with this library'
 task :console do
   sh 'irb -rubygems -I lib -r soulmate_rails.rb'
 end
+
+desc 'Release the gem'
+task :release => :build do
+  sh "git tag -a 'v#{SoulmateRails::VERSION}' -m 'Version #{SoulmateRails::VERSION}'"
+  sh 'git push origin master --tags'
+  sh "gem push pkg/soulmate_rails-#{SoulmateRails::VERSION}.gem"
+end
