@@ -1,1 +1,1 @@
-rvm 1.9.3@soulmate_rails --create
+rvm 1.9.3-p385@soulmate_rails --create
