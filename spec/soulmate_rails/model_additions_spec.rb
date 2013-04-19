@@ -1,10 +1,5 @@
 require 'spec_helper'
 
-require 'samples/models/user_single'
-require 'samples/models/user_multiple'
-require 'samples/models/user_aliases'
-require 'samples/models/user_data'
-
 module SoulmateRails
   describe ModelAdditions do
     context 'autocomplete for name' do

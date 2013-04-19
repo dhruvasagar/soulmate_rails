@@ -9,7 +9,7 @@ module SoulmateRails
     end
 
     def update_index_for(attribute, options={})
-      loader = instance_variable_get("@#{loader_for(attribute)}") || instance_variable_set("@#{loader_for(attribute)}", Soulmate::Loader.new(loader_for(attribute)))
+      loader = instance_variable_get("@#{self.class.name_for(attribute)}_loader") || instance_variable_set("@#{self.class.name_for(attribute)}_loader", Soulmate::Loader.new(self.class.name_for(attribute)))
       item = {
         'id' => "#{attribute}_#{self.id}",
         'term' => send(attribute),
@@ -35,16 +35,12 @@ module SoulmateRails
         end
       end
 
-      loader.add(item, options)
+      loader.add(item)
     end
 
     def remove_index_for(attribute)
-      loader = instance_variable_get("@#{loader_for(attribute)}") || instance_variable_set("@#{loader_for(attribute)}", Soulmate::Loader.new(loader_for(attribute)))
+      loader = instance_variable_get("@#{self.class.name_for(attribute)}") || instance_variable_set("@#{self.class.name_for(attribute)}", Soulmate::Loader.new(self.class.name_for(attribute)))
       loader.remove('id' => "#{attribute}_#{self.id}")
-    end
-
-    def loader_for(attribute)
-      "#{self.class.normalized_class_name}_#{attribute}"
     end
 
     module ClassMethods
@@ -66,16 +62,19 @@ module SoulmateRails
       end
 
       def search_by(attribute, term, options={})
-        matcher = instance_variable_get("@#{matcher_for(attribute)}") || instance_variable_set("@#{matcher_for(attribute)}", Soulmate::Matcher.new(matcher_for(attribute)))
+        matcher = instance_variable_get("@#{name_for(attribute)}_matcher") || instance_variable_set("@#{name_for(attribute)}_matcher", Soulmate::Matcher.new(name_for(attribute)))
         matches = matcher.matches_for_term(term, options)
-        matches = matches.map do |match|
-          object = find(match['id'].split('_')[-1].to_i)
-          object.soulmate_data = match['data'].symbolize_keys if object && match['data']
+
+        hash = {}
+        matches.each {|m| hash[m['id'].split('_')[-1].to_i] = m}
+
+        where(:id => hash.keys).map do |object|
+          object.soulmate_data = hash[object.id]['data'].symbolize_keys if hash[object.id] && hash[object.id]['data']
           object
         end
       end
 
-      def matcher_for(attribute)
+      def name_for(attribute)
         "#{normalized_class_name}_#{attribute}"
       end
 
