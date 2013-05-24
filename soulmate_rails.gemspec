@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.authors = ["Dhruva Sagar"]
   s.homepage = "http://github.com/dhruvasagar/soulmate_rails"
   s.summary = "Redis-backed autocompletion engine for Rails"
-  s.description = "Soulmate Rails is a tool to help solve the common problem of developing a fast autocomplete feature for Rails. It uses Redis's sorted sets to build an index of partial words and corresponding top matches."
+  s.description = "Soulmate Rails is a tool to help solve the common problem of developing a fast autocomplete feature for Rails. It uses Redis's sorted sets to build an index of partial words and corresponding top matches. Modified by Jim Zhan to add utility functions and for bug fixing."
 
   s.files = `git ls-files`.split("\n")
   s.test_files = `git ls-files -- {test,spec,features}/*`.split("\n")
