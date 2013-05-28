@@ -125,7 +125,7 @@ module SoulmateRails
       # example call: City.reload_cache_by_name({:score => :autocomplete_score, :data => :autocomplete_data})
       def reload_cache(attribute, options)
         flush_cache(attribute)
-        self.all.each { |object| object.update_index_for(attribute, options) }
+        self.find_each { |object| object.update_index_for(attribute, options) }
       end
 
       # define a mathod to return results from cache instead of connecting to backend database
