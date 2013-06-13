@@ -73,6 +73,14 @@ module Soulmate
     end
   end
 
+  def cache_namespace
+    @cache_namespace
+  end
+
+  def cache_namespace=(namespace)
+    @cache_namespace = namespace
+  end
+
   def max_results
     # default to 10 max results returned
     @max_results ||= 10
