@@ -8,6 +8,7 @@ module SoulmateRails
 
     initializer 'soulmate_rails.set_configs' do |app|
       # configuration file for redis server and soulmate
+      Soulmate.cache_namespace ||= "#{app.engine_name}_#{Rails.env}"
       redis_config_file = "config/redis_server.yml"
       if File.exists?(redis_config_file)
         file = YAML.load_file(redis_config_file)

@@ -9,15 +9,15 @@ module Soulmate
     end
 
     def base
-      "soulmate-index:#{type}"
+      "soulmate-index:#{Soulmate.cache_namespace}_#{type}"
     end
 
     def database
-      "soulmate-data:#{type}"
+      "soulmate-data:#{Soulmate.cache_namespace}_#{type}"
     end
 
     def cachebase
-      "soulmate-cache:#{type}"
+      "soulmate-cache:#{Soulmate.cache_namespace}_#{type}"
     end
   end
 end
