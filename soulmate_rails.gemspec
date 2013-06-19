@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_runtime_dependency 'redis', '>= 2.0'
+  s.add_runtime_dependency 'json', '>= 1.7.7'
   s.add_runtime_dependency 'multi_json', '>= 1.0'
   s.add_runtime_dependency 'activesupport', '>= 0'
 
