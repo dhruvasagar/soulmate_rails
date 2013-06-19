@@ -7,9 +7,23 @@ module SoulmateRails
     end
 
     initializer 'soulmate_rails.set_configs' do |app|
-      options = app.config.soulmate_rails
-
-      Soulmate.redis = options[:redis] if options[:redis]
+      # configuration file for redis server and soulmate
+      Soulmate.cache_namespace ||= "#{app.engine_name}_#{Rails.env}"
+      redis_config_file = "config/redis_server.yml"
+      if File.exists?(redis_config_file)
+        file = YAML.load_file(redis_config_file)
+        Soulmate.redis = file[:redis_url] if file[:redis_url]
+        Soulmate.cache_time = file[:cache_time] if file[:cache_time]
+        Soulmate.max_results = file[:max_results] if file[:max_results]
+      end
+      # configuration file for stopping words
+      stop_words_file = "config/stopping_words.yml"
+      if File.exists?(stop_words_file)
+        stopping_words = []
+        s_file = YAML.load_file(stop_words_file)
+        s_file.each_line { |line| stopping_words.push(line) }
+        Soulmate.stop_words = stopping_words
+      end
     end
   end
 end

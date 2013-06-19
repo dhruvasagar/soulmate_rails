@@ -17,6 +17,7 @@ module Soulmate
   extend self
 
   MIN_COMPLETE = 2
+
   DEFAULT_STOP_WORDS = ["vs", "at", "the"]
 
   def redis=(server)
@@ -51,4 +52,43 @@ module Soulmate
     @stop_words = Array(arr).flatten
   end
 
+  def min_complete
+    @min_complete ||= MIN_COMPLETE
+  end
+
+  def min_complete=(min_len)
+    if min_len.is_a? Integer
+      @min_complete = min_len unless min_len < 1 || min_len > 5
+    end
+  end
+
+  def cache_time
+    # default to 10 minutes
+    @cache_time ||= 10 * 60
+  end
+
+  def cache_time=(time_period)
+    if time_period.is_a? Integer
+      @cache_time = time_period unless time_period < 1
+    end
+  end
+
+  def cache_namespace
+    @cache_namespace
+  end
+
+  def cache_namespace=(namespace)
+    @cache_namespace = namespace
+  end
+
+  def max_results
+    # default to 10 max results returned
+    @max_results ||= 10
+  end
+
+  def max_results=(max_num)
+    if max_num.is_a? Integer
+      @max_results = max_num unless max_num < 1
+    end
+  end
 end
