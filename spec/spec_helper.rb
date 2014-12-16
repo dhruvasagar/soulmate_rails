@@ -12,7 +12,6 @@ TestRoot = File.expand_path(File.dirname(__FILE__))
 
 RSpec.configure do |config|
   config.order = 'random'
-  config.color_enabled = true
 
   config.before(:suite) do
     redis = MockRedis.new

@@ -39,7 +39,7 @@ module Soulmate
       end
 
       it 'should load values' do
-        @items_loaded.size.should eq(7)
+        expect(@items_loaded.size).to eq(7)
       end
     end
 
@@ -51,15 +51,15 @@ module Soulmate
       it 'should successfully remove the item' do
         @loader.load([])
         results = @matcher.matches_for_term('te', :cache => false)
-        results.size.should eq(0)
+        expect(results.size).to eq(0)
 
         @loader.add('id' => 1, 'term' => 'Testing this', 'score' => 10)
         results = @matcher.matches_for_term('te', :cache => false)
-        results.size.should eq(1)
+        expect(results.size).to eq(1)
 
         @loader.remove('id' => 1)
         results = @matcher.matches_for_term('te', :cache => false)
-        results.size.should eq(0)
+        expect(results.size).to eq(0)
       end
 
       it 'should successfully update items' do
@@ -69,15 +69,15 @@ module Soulmate
         @loader.add("id" => 3, "term" => "Something different", "score" => 5)
 
         results = @matcher.matches_for_term('te', :cache => false)
-        results.size.should eq(2)
-        results.first['term'].should eq('Testing this')
-        results.first['score'].should eq(10)
+        expect(results.size).to eq(2)
+        expect(results.first['term']).to eq('Testing this')
+        expect(results.first['score']).to eq(10)
 
         @loader.add("id" => 1, "term" => "Updated", "score" => 5)
         results = @matcher.matches_for_term('te', :cache => false)
-        results.size.should eq(1)
-        results.first['term'].should eq('Another Term')
-        results.first['score'].should eq(9)
+        expect(results.size).to eq(1)
+        expect(results.first['term']).to eq('Another Term')
+        expect(results.first['score']).to eq(9)
       end
     end
   end

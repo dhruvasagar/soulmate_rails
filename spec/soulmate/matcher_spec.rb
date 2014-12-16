@@ -18,20 +18,20 @@ module Soulmate
 
     it 'should successfully return matches for given term' do
       results = @matcher.matches_for_term('stad')
-      results.size.should eq(5)
-      results.first['term'].should eq('Citi Field')
+      expect(results.size).to eq(5)
+      expect(results.first['term']).to eq('Citi Field')
     end
 
     it 'should successfully return matches with aliases' do
       results = @matcher.matches_for_term('land shark stadium')
-      results.size.should eq(1)
-      results.first['term'].should eq('Sun Life Stadium')
+      expect(results.size).to eq(1)
+      expect(results.first['term']).to eq('Sun Life Stadium')
     end
 
     it 'should successfully return matches with chinese' do
       results = @matcher.matches_for_term('中国')
-      results.size.should eq(1)
-      results.first['term'].should eq('中国佛山 李小龙')
+      expect(results.size).to eq(1)
+      expect(results.first['term']).to eq('中国佛山 李小龙')
     end
   end
 end
