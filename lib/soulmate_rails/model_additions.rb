@@ -48,12 +48,12 @@ module SoulmateRails
         define_method "update_index_for_#{attribute}" do
           update_index_for(attribute, options)
         end
-        after_save "update_index_for_#{attribute}"
+        after_save "update_index_for_#{attribute}".to_sym 
 
         define_method "remove_index_for_#{attribute}" do
           remove_index_for(attribute)
         end
-        before_destroy "remove_index_for_#{attribute}"
+        before_destroy "remove_index_for_#{attribute}".to_sym 
 
         define_singleton_method "search_by_#{attribute}" do |term, *opts|
           opts = opts.empty? ? {} : opts.first
